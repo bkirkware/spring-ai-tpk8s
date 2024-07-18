@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active:  pgvector
+  config:
+    import: "optional:classpath:/creds.yaml"
+  ai:
+    openai:
+      chat:
+        options:
+          functions:
+            - weatherFunction
+          n: 3
+          model: "gpt-3.5-turbo"
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+---
+spring:
+  config:
+    activate:
+      on-profile: pgvector
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/springaidb?sslmode=require"
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: 
+  ai:
+    vectorstore:
+      pgvector:
+        index-type: IVFFlat
+        distance-type: COSINE_DISTANCE
+        dimension: 1536
